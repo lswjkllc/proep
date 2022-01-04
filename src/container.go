@@ -5,11 +5,16 @@ import (
 	"sync"
 
 	coms "github.com/lswjkllc/proep/src/commons"
+	ms "github.com/lswjkllc/proep/src/models"
+	ss "github.com/lswjkllc/proep/src/services"
+	"gorm.io/gorm"
 )
 
 // Container 相关
 type Container struct {
-	BaseConfig coms.ConfigInfo `yaml:"config" json:"config"`
+	BaseConfig  *coms.ConfigInfo `yaml:"config" json:"config"`
+	DB          *gorm.DB         `yaml:"db" json:"db"`
+	UserUsecase *ss.UserService  `yaml:"userUsecase" json:"userUsecase"`
 }
 
 func (container Container) String() string {
@@ -29,8 +34,12 @@ func GetContainer(path string) *Container {
 	once.Do(func() {
 		// 获取配置信息
 		config := coms.GetConfig(path)
+		// 获取 mysql 连接
+		db := ms.InitDB(config, false)
+		// 获取 user 服务
+		userUsecase := &ss.UserService{Config: config, DB: db}
 		// 初始化 Container
-		container = &Container{BaseConfig: *config}
+		container = &Container{BaseConfig: config, DB: db, UserUsecase: userUsecase}
 	})
 	return container
 }
