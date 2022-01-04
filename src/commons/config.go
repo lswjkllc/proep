@@ -1,6 +1,7 @@
 package commons
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
@@ -17,6 +18,7 @@ type CommonBaseEntity struct {
 	Name string `yaml:"name" json:"name"`
 	Host string `yaml:"host" json:"host"`
 	Port int    `yaml:"port" json:"port"`
+	Env  string `yaml:"env" json:"env"`
 }
 
 // 数据库基础信息
@@ -34,6 +36,13 @@ type MysqlDataEntity struct {
 	Password string `yaml:"password" json:"password"`
 }
 
+func (myde MysqlDataEntity) GetDns() string {
+	dns := fmt.Sprintf(
+		"%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
+		myde.User, myde.Password, myde.Host, myde.Port, myde.Name)
+	return dns
+}
+
 // redis 数据库信息
 type RedisDataEntity struct {
 	Host    string `yaml:"host" json:"host"`
@@ -42,9 +51,9 @@ type RedisDataEntity struct {
 	Timeout int    `yaml:"timeout" json:"timeout"`
 }
 
-func (info *ConfigInfo) Init() {
+func (info *ConfigInfo) Init(path string) {
 	// 读取文件
-	yamlFile, err := ioutil.ReadFile("./config/config.yaml")
+	yamlFile, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -55,8 +64,8 @@ func (info *ConfigInfo) Init() {
 	}
 }
 
-func GetConfig() *ConfigInfo {
+func GetConfig(path string) *ConfigInfo {
 	config := &ConfigInfo{}
-	config.Init()
+	config.Init(path)
 	return config
 }

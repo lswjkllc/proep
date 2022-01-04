@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"encoding/json"
@@ -20,7 +20,7 @@ func (container Container) String() string {
 
 func GetContainer() *Container {
 	// 获取配置信息
-	config := coms.GetConfig()
+	config := coms.GetConfig("/Users/tuya/Workspace/Go/proep/config/config.yaml")
 	// 初始化 Container
 	container := &Container{BaseConfig: *config}
 	return container

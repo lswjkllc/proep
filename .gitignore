@@ -15,6 +15,7 @@
 # vendor/
 
 # custom
+.vscode/
 logs/
 local/
 config.yaml
