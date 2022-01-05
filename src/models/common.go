@@ -10,7 +10,7 @@ import (
 
 func InitDB(config *coms.ConfigInfo, migrate bool) *gorm.DB {
 	// 获取 mysql dns
-	mysqlDns := config.DataBase.MysqlData.GetDns()
+	mysqlDns := config.DataBase.MysqlData.GetDsn()
 	// 获取 mysql 连接
 	db, err := gorm.Open(mysql.Open(mysqlDns), &gorm.Config{})
 	if err != nil {

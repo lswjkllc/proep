@@ -14,7 +14,7 @@ func InitDB(migrate bool) *gorm.DB {
 	// 获取 config
 	config := sc.GetContainer("../../config/config.yaml")
 	// 获取 mysql dns
-	mysqlDns := config.BaseConfig.DataBase.MysqlData.GetDns()
+	mysqlDns := config.BaseConfig.DataBase.MysqlData.GetDsn()
 	// 获取 mysql 连接
 	db, err := gorm.Open(mysql.Open(mysqlDns), &gorm.Config{})
 	if err != nil {

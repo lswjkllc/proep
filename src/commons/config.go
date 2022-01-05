@@ -36,7 +36,7 @@ type MysqlDataEntity struct {
 	Password string `yaml:"password" json:"password"`
 }
 
-func (myde MysqlDataEntity) GetDns() string {
+func (myde MysqlDataEntity) GetDsn() string {
 	dns := fmt.Sprintf(
 		"%s:%s@(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
 		myde.User, myde.Password, myde.Host, myde.Port, myde.Name)
