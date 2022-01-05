@@ -37,7 +37,7 @@ func GetContainer(path string) *Container {
 		// 获取 mysql 连接
 		db := ms.InitDB(config, false)
 		// 获取 user 服务
-		userUsecase := &ss.UserService{Config: config, DB: db}
+		userUsecase := ss.NewService(config, db)
 		// 初始化 Container
 		container = &Container{BaseConfig: config, DB: db, UserUsecase: userUsecase}
 	})
