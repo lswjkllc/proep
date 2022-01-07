@@ -7,8 +7,7 @@ import (
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	us "github.com/lswjkllc/proep/src/utils"
+	// us "github.com/lswjkllc/proep/src/utils"
 )
 
 // 定义 Logger
@@ -57,8 +56,23 @@ func getEncoder(config *ConfigInfo) zapcore.Encoder {
 	// 获取 序列化配置
 	encoderConfig := getEncoderConfig(debug)
 	// 初始化 Encoder
-	encoder := zapcore.NewJSONEncoder(encoderConfig)
+	encoder := chooseEncoder(debug, encoderConfig)
 	// 返回
+	return encoder
+}
+
+// 选择序列化器
+func chooseEncoder(debug bool, encoderConfig zapcore.EncoderConfig) zapcore.Encoder {
+	// 定义
+	var encoder zapcore.Encoder
+	// 初始化
+	if debug {
+		// debug 模型下, 使用 ConsoleEncoder
+		encoder = zapcore.NewConsoleEncoder(encoderConfig)
+	} else {
+		// 否则, 使用 JsonEncoder
+		encoder = zapcore.NewJSONEncoder(encoderConfig)
+	}
 	return encoder
 }
 
@@ -106,7 +120,7 @@ func checkLevel(levelstr string) zapcore.Level {
 		// FATAL
 		level = zapcore.FatalLevel
 	default:
-		panic(us.JoinStrings("invalid log level => ", levelstr))
+		panic("invalid log level => " + levelstr)
 	}
 	return level
 }
