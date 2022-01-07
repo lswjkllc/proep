@@ -11,6 +11,8 @@ import (
 
 func AddUserRouter(e *echo.Echo) {
 	e.POST("/user/create", hs.CreateUser)
+
+	e.GET("/html", hs.GetHtml)
 }
 
 func main() {
