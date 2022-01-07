@@ -18,11 +18,11 @@ const (
 
 // 请求错误类
 type ReqError struct {
-	Value string `json:"name" yaml:"name" query:"name"`
+	value string
 }
 
 func (e *ReqError) Error() string {
-	return e.Value
+	return e.value
 }
 
 // 请求类
