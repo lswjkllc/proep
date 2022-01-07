@@ -26,8 +26,7 @@ func GetHtml(c echo.Context) error {
 		Method: us.POST,
 		Body: map[string]interface{}{
 			"origin": "b9afeacd09885ee3bea033ffb86563ae", "ownerCode": "241"},
-		Headers: nil,
-		Json:    true,
+		Json: true,
 	}
 	// 获取结果
 	dt, err := req.Do(&html)

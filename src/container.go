@@ -30,10 +30,9 @@ var (
 	container *Container
 )
 
-func GetContainer(path string) *Container {
+func GetContainer() *Container {
+	config := coms.GetConfig()
 	once.Do(func() {
-		// 获取配置信息
-		config := coms.GetConfig(path)
 		// 获取 mysql 连接
 		db := ms.InitDB(config, false)
 		// 获取 user 服务

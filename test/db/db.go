@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sc "github.com/lswjkllc/proep/src"
+	coms "github.com/lswjkllc/proep/src/commons"
 	ms "github.com/lswjkllc/proep/src/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,9 +12,9 @@ import (
 
 func InitDB(migrate bool) *gorm.DB {
 	// 获取 config
-	config := sc.GetContainer("../../config/config.yaml")
+	config := coms.GetConfigByPath("../../config/config.yaml")
 	// 获取 mysql dns
-	mysqlDns := config.BaseConfig.DataBase.MysqlData.GetDsn()
+	mysqlDns := config.DataBase.MysqlData.GetDsn()
 	// 获取 mysql 连接
 	db, err := gorm.Open(mysql.Open(mysqlDns), &gorm.Config{})
 	if err != nil {

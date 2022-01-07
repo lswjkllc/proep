@@ -5,7 +5,9 @@ import (
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+
 	sc "github.com/lswjkllc/proep/src"
+	// coms "github.com/lswjkllc/proep/src/commons"
 	hs "github.com/lswjkllc/proep/src/handlers"
 )
 
@@ -16,8 +18,9 @@ func AddUserRouter(e *echo.Echo) {
 }
 
 func main() {
-	config := sc.GetContainer("./config/config.yaml")
-	fmt.Printf("系统配置: %v\n\n", config)
+	// 获取 Container
+	container := sc.GetContainer()
+	fmt.Printf("系统配置: %v\n\n", container.BaseConfig)
 
 	e := echo.New()
 	// 注册中间件

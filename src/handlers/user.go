@@ -14,7 +14,7 @@ func CreateUser(c echo.Context) error {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
 	// 获取 Container
-	container := sc.GetContainer("")
+	container := sc.GetContainer()
 	// 创建 User
 	err := container.UserUsecase.CreateUser(user)
 	if err != nil {

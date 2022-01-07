@@ -3,6 +3,7 @@ package commons
 import (
 	"fmt"
 	"io/ioutil"
+	"sync"
 
 	"gopkg.in/yaml.v2"
 )
@@ -15,10 +16,14 @@ type ConfigInfo struct {
 
 // 公共基础信息
 type CommonBaseEntity struct {
-	Name string `yaml:"name" json:"name"`
-	Host string `yaml:"host" json:"host"`
-	Port int    `yaml:"port" json:"port"`
-	Env  string `yaml:"env" json:"env"`
+	Name     string `yaml:"name" json:"name"`
+	Host     string `yaml:"host" json:"host"`
+	Port     int    `yaml:"port" json:"port"`
+	Area     string `yaml:"area" json:"area"`
+	Env      string `yaml:"env" json:"env"`
+	LogPath  string `yaml:"logPath" json:"logPath"`
+	LogLevel string `yaml:"logLevel" json:"logLevel"`
+	Debug    bool   `yaml:"debug" json:"debug"`
 }
 
 // 数据库基础信息
@@ -51,7 +56,7 @@ type RedisDataEntity struct {
 	Timeout int    `yaml:"timeout" json:"timeout"`
 }
 
-func (info *ConfigInfo) Init(path string) {
+func (info *ConfigInfo) ReadFile(path string) {
 	// 读取文件
 	yamlFile, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -64,8 +69,21 @@ func (info *ConfigInfo) Init(path string) {
 	}
 }
 
-func GetConfig(path string) *ConfigInfo {
+func GetConfigByPath(path string) *ConfigInfo {
 	config := &ConfigInfo{}
-	config.Init(path)
+	config.ReadFile(path)
+	return config
+}
+
+// 初始化 config
+var (
+	once   sync.Once
+	config *ConfigInfo
+)
+
+func GetConfig() *ConfigInfo {
+	once.Do(func() {
+		config = GetConfigByPath("./config/config.yaml")
+	})
 	return config
 }
