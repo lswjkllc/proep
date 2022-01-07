@@ -85,18 +85,25 @@ func checkLevel(levelstr string) zapcore.Level {
 	upperLevelstr := strings.ToUpper(levelstr)
 	switch upperLevelstr {
 	case zapcore.DebugLevel.CapitalString():
+		// DEBUG
 		level = zapcore.DebugLevel
 	case zapcore.InfoLevel.CapitalString():
+		// INFO
 		level = zapcore.InfoLevel
 	case zapcore.WarnLevel.CapitalString():
+		// WARN
 		level = zapcore.WarnLevel
 	case zapcore.ErrorLevel.CapitalString():
+		// ERROR
 		level = zapcore.ErrorLevel
 	case zapcore.DPanicLevel.CapitalString():
+		// DPANIC
 		level = zapcore.DPanicLevel
 	case zapcore.PanicLevel.CapitalString():
+		// PANIC
 		level = zapcore.PanicLevel
 	case zapcore.FatalLevel.CapitalString():
+		// FATAL
 		level = zapcore.FatalLevel
 	default:
 		panic(us.JoinStrings("invalid log level => ", levelstr))
