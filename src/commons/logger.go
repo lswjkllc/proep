@@ -29,7 +29,7 @@ func initLogger() {
 	sync := getWriteSync(config.LogBase)
 	// 获取核心数据结构
 	core := zapcore.NewCore(encoder, sync, level)
-	// 堆栈跟踪
+	// 堆栈跟踪 (添加日志行号)
 	caller := zap.AddCaller()
 	// 初始化
 	Logger = zap.New(core, caller)
