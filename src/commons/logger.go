@@ -2,9 +2,9 @@ package commons
 
 import (
 	"os"
-	"path/filepath"
 	"strings"
 
+	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	// us "github.com/lswjkllc/proep/src/utils"
@@ -22,27 +22,31 @@ func initLogger() {
 	/// 获取配置
 	config := GetConfig()
 	// 检查日志等级
-	level := checkLevel(config.CommonBase.LogLevel)
+	level := checkLevel(config.LogBase.Level)
 	// 获取序列化器
 	encoder := getEncoder(config)
 	// 获取输出器
-	sync := getWriteSync(config)
+	sync := getWriteSync(config.LogBase)
 	// 获取核心数据结构
 	core := zapcore.NewCore(encoder, sync, level)
+	// 堆栈跟踪
+	caller := zap.AddCaller()
 	// 初始化
-	Logger = zap.New(core)
+	Logger = zap.New(core, caller)
 }
 
 // 负责日志写入的位置
-func getWriteSync(config *ConfigInfo) zapcore.WriteSyncer {
-	// 打开文件
-	logPath := filepath.Join(config.CommonBase.LogPath, "/server.log")
-	logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_APPEND|os.O_RDWR, os.ModePerm)
-	if err != nil {
-		panic(err.Error())
+func getWriteSync(logConfig LogBaseEntity) zapcore.WriteSyncer {
+	// 初始化
+	lumberJackLogger := &lumberjack.Logger{
+		Filename:   logConfig.Path,       // 日志文件路径, 默认 os.TempDir()
+		MaxSize:    logConfig.MaxSize,    // 每个日志文件保存10M, 默认 100M
+		MaxBackups: logConfig.MaxBackups, // 保留30个备份, 默认不限
+		MaxAge:     logConfig.MaxAge,     // 保留7天, 默认不限
+		Compress:   logConfig.Compress,   // 是否压缩, 默认不压缩
 	}
 	// 输出到 文件
-	syncFile := zapcore.AddSync(logFile)
+	syncFile := zapcore.AddSync(lumberJackLogger)
 	// 输出到 标准错误
 	syncConsole := zapcore.AddSync(os.Stderr)
 	// 返回 syncer
@@ -56,23 +60,8 @@ func getEncoder(config *ConfigInfo) zapcore.Encoder {
 	// 获取 序列化配置
 	encoderConfig := getEncoderConfig(debug)
 	// 初始化 Encoder
-	encoder := chooseEncoder(debug, encoderConfig)
+	encoder := zapcore.NewJSONEncoder(encoderConfig)
 	// 返回
-	return encoder
-}
-
-// 选择序列化器
-func chooseEncoder(debug bool, encoderConfig zapcore.EncoderConfig) zapcore.Encoder {
-	// 定义
-	var encoder zapcore.Encoder
-	// 初始化
-	if debug {
-		// debug 模型下, 使用 ConsoleEncoder
-		encoder = zapcore.NewConsoleEncoder(encoderConfig)
-	} else {
-		// 否则, 使用 JsonEncoder
-		encoder = zapcore.NewJSONEncoder(encoderConfig)
-	}
 	return encoder
 }
 

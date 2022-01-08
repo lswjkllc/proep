@@ -7,6 +7,7 @@ require (
 	github.com/guonaihong/gout v0.2.11
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.1 // indirect
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3 // indirect
 	gopkg.in/yaml.v2 v2.4.0

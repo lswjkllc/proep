@@ -11,19 +11,28 @@ import (
 //解析yml文件
 type ConfigInfo struct {
 	CommonBase CommonBaseEntity `yaml:"commonbase" json:"commonbase"`
+	LogBase    LogBaseEntity    `yaml:"logbase" json:"logbase"`
 	DataBase   DataBaseEntity   `yaml:"database" json:"database"`
 }
 
 // 公共基础信息
 type CommonBaseEntity struct {
-	Name     string `yaml:"name" json:"name"`
-	Host     string `yaml:"host" json:"host"`
-	Port     int    `yaml:"port" json:"port"`
-	Area     string `yaml:"area" json:"area"`
-	Env      string `yaml:"env" json:"env"`
-	LogPath  string `yaml:"logPath" json:"logPath"`
-	LogLevel string `yaml:"logLevel" json:"logLevel"`
-	Debug    bool   `yaml:"debug" json:"debug"`
+	Name  string `yaml:"name" json:"name"`
+	Host  string `yaml:"host" json:"host"`
+	Port  int    `yaml:"port" json:"port"`
+	Area  string `yaml:"area" json:"area"`
+	Env   string `yaml:"env" json:"env"`
+	Debug bool   `yaml:"debug" json:"debug"`
+}
+
+// 日志配置信息
+type LogBaseEntity struct {
+	Level      string `yaml:"level" json:"level"`
+	Path       string `yaml:"path" json:"path"`
+	MaxSize    int    `yaml:"maxsize" json:"maxsize"`
+	MaxBackups int    `yaml:"maxbackups" json:"maxbackups"`
+	MaxAge     int    `yaml:"maxage" json:"maxage"`
+	Compress   bool   `yaml:"compress" json:"compress"`
 }
 
 // 数据库基础信息

@@ -1,7 +1,11 @@
 package handlers
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo"
+
+	coms "github.com/lswjkllc/proep/src/commons"
 	us "github.com/lswjkllc/proep/src/utils"
 )
 
@@ -38,6 +42,7 @@ func GetHtml(c echo.Context) error {
 	if html.Code != 0 {
 		return us.ResponseJson(c, us.Fail, html.Message, nil)
 	}
+	coms.Logger.Info(fmt.Sprintf("%v", html.Data))
 	// 返回响应
 	return us.ResponseJson(c, us.Success, "", html.Data)
 }
