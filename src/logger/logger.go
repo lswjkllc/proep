@@ -1,13 +1,13 @@
-package commons
+package logger
 
 import (
 	"os"
 	"strings"
 
+	coms "github.com/lswjkllc/proep/src/commons"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	// us "github.com/lswjkllc/proep/src/utils"
 )
 
 // 定义 Logger
@@ -20,7 +20,7 @@ func init() {
 
 func initLogger() {
 	/// 获取配置
-	config := GetConfig()
+	config := coms.GetConfig()
 	// 检查日志等级
 	level := checkLevel(config.LogBase.Level)
 	// 获取序列化器
@@ -36,7 +36,7 @@ func initLogger() {
 }
 
 // 负责日志写入的位置
-func getWriteSync(logConfig LogBaseEntity) zapcore.WriteSyncer {
+func getWriteSync(logConfig coms.LogBaseEntity) zapcore.WriteSyncer {
 	// 初始化
 	lumberJackLogger := &lumberjack.Logger{
 		Filename:   logConfig.Path,       // 日志文件路径, 默认 os.TempDir()
@@ -54,7 +54,7 @@ func getWriteSync(logConfig LogBaseEntity) zapcore.WriteSyncer {
 }
 
 // 设置序列化方式 (日志格式)
-func getEncoder(config *ConfigInfo) zapcore.Encoder {
+func getEncoder(config *coms.ConfigInfo) zapcore.Encoder {
 	// 获取 debug 信息
 	debug := config.CommonBase.Debug
 	// 获取 序列化配置

@@ -1,11 +1,10 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/labstack/echo"
+	"go.uber.org/zap"
 
-	coms "github.com/lswjkllc/proep/src/commons"
+	"github.com/lswjkllc/proep/src/logger"
 	us "github.com/lswjkllc/proep/src/utils"
 )
 
@@ -34,7 +33,10 @@ func GetHtml(c echo.Context) error {
 	}
 	// 获取结果
 	dt, err := req.Do(&html)
-	c.Logger().Printf("cost time: %s", dt)
+	logger.Logger.Info(
+		"request profession search",
+		zap.String("traceId", c.Request().Header.Get("traceId")),
+		zap.Duration("costTime", dt))
 	if err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
@@ -42,7 +44,6 @@ func GetHtml(c echo.Context) error {
 	if html.Code != 0 {
 		return us.ResponseJson(c, us.Fail, html.Message, nil)
 	}
-	coms.Logger.Info(fmt.Sprintf("%v", html.Data))
 	// 返回响应
 	return us.ResponseJson(c, us.Success, "", html.Data)
 }
