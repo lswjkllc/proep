@@ -120,8 +120,10 @@ func checkLevel(levelstr string) zapcore.Level {
 func Info(msg string, fields ...zap.Field) {
 	// 获取 caller 链路信息
 	caller := getCaller(1)
+	// 将 caller 信息保存
+	fields = append(fields, zap.String("caller", caller))
 	// 输出日志
-	Logger.Info(msg, append(fields, zap.String("caller", caller))...)
+	Logger.Info(msg, fields...)
 }
 
 func getCaller(skipOff int) string {

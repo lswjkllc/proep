@@ -15,6 +15,7 @@
 # vendor/
 
 # custom
+.DS_Store
 .vscode/
 logs/
 local/
