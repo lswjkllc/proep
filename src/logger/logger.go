@@ -2,9 +2,12 @@ package logger
 
 import (
 	"os"
+	"runtime"
+	"strconv"
 	"strings"
 
 	coms "github.com/lswjkllc/proep/src/commons"
+	us "github.com/lswjkllc/proep/src/utils"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -30,9 +33,9 @@ func initLogger() {
 	// 获取核心数据结构
 	core := zapcore.NewCore(encoder, sync, level)
 	// 堆栈跟踪 (添加日志行号)
-	caller := zap.AddCaller()
+	// caller := zap.AddCaller()
 	// 初始化
-	Logger = zap.New(core, caller)
+	Logger = zap.New(core) //.WithOptions(caller)
 }
 
 // 负责日志写入的位置
@@ -112,4 +115,23 @@ func checkLevel(levelstr string) zapcore.Level {
 		panic("invalid log level => " + levelstr)
 	}
 	return level
+}
+
+func Info(msg string, fields ...zap.Field) {
+	// 获取 caller 链路信息
+	caller := getCaller(1)
+	// 输出日志
+	Logger.Info(msg, append(fields, zap.String("caller", caller))...)
+}
+
+func getCaller(skipOff int) string {
+	// 获取 调用信息
+	_, filePath, line, ok := runtime.Caller(skipOff + 1)
+	if !ok {
+		panic("runtime caller error ...")
+	}
+	// 将 int 转 string
+	sline := strconv.Itoa(line)
+	// 连接并返回
+	return us.JoinStrings(filePath, ":", sline)
 }

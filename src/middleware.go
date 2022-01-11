@@ -15,8 +15,8 @@ func RequestEnd(next echo.HandlerFunc) echo.HandlerFunc {
 		defer func() {
 			costTime := time.Since(startTime)
 			traceId := c.Request().Header.Get("traceId")
-			logger.Logger.Info(
-				"request end",
+			logger.Info(
+				"RequestEnd",
 				zap.String("traceId", traceId),
 				zap.String("uri", c.Path()),
 				zap.String("host", c.Request().Host),

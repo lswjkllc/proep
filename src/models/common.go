@@ -8,9 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB(config *coms.ConfigInfo, migrate bool) *gorm.DB {
+func InitDB(mysqlConfig *coms.MysqlDataEntity, migrate bool) *gorm.DB {
 	// 获取 mysql dns
-	mysqlDns := config.DataBase.MysqlData.GetDsn()
+	mysqlDns := mysqlConfig.GetDsn()
 	// 获取 mysql 连接
 	db, err := gorm.Open(mysql.Open(mysqlDns), &gorm.Config{})
 	if err != nil {
@@ -22,4 +22,8 @@ func InitDB(config *coms.ConfigInfo, migrate bool) *gorm.DB {
 	}
 
 	return db
+}
+
+func InitCache(config *coms.RedisDataEntity) string {
+	return ""
 }

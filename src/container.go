@@ -2,6 +2,7 @@ package src
 
 import (
 	"encoding/json"
+	"fmt"
 	"sync"
 
 	coms "github.com/lswjkllc/proep/src/commons"
@@ -25,6 +26,10 @@ func (container Container) String() string {
 	return string(out)
 }
 
+func (container *Container) Close() {
+	fmt.Println("清理 Container ...")
+}
+
 var (
 	once      sync.Once
 	container *Container
@@ -34,7 +39,9 @@ func GetContainer() *Container {
 	config := coms.GetConfig()
 	once.Do(func() {
 		// 获取 mysql 连接
-		db := ms.InitDB(config, false)
+		db := ms.InitDB(&config.DataBase.MysqlData, false)
+		// // 获取 redis 连接
+		// cache := ms.InitCache(&config.DataBase.RedisData)
 		// 获取 user 服务
 		userUsecase := ss.NewService(config, db)
 		// 初始化 Container
