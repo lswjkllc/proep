@@ -42,6 +42,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// 添加路由
+	rs.AddHealthRouter(e)
 	rs.AddUserRouter(e)
 
 	// 开启服务
