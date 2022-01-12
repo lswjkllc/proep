@@ -31,8 +31,8 @@ func (ucase UserService) GetUserById(id int) (ms.User, error) {
 	return user, err
 }
 
-func (ucase UserService) UpdateUserById(id int, user *ms.User) error {
-	return ucase.whereById(id).Updates(&user).Error
+func (ucase UserService) Save(user *ms.User) {
+	ucase.Db.Save(user)
 }
 
 func (ucase UserService) DeleteUserById(id int, hard bool) error {

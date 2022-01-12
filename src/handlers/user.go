@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/labstack/echo"
@@ -53,6 +54,7 @@ func UpdateUser(c echo.Context) error {
 	container := sc.GetContainer()
 	// 获取 User
 	user, err := container.UserUsecase.GetUserById(id)
+	fmt.Printf("old user: %+v\n", user)
 	if err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
@@ -60,11 +62,9 @@ func UpdateUser(c echo.Context) error {
 	if err := c.Bind(&user); err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
-	// 修改 user
-	err = container.UserUsecase.UpdateUserById(id, &user)
-	if err != nil {
-		return us.ResponseJson(c, us.Fail, err.Error(), nil)
-	}
+	// 保存 user
+	container.UserUsecase.Save(&user)
+	fmt.Printf("new user: %+v\n", user)
 
 	return us.ResponseJson(c, us.Success, "", user)
 }

@@ -39,7 +39,7 @@ func GetContainer() *Container {
 	config := coms.GetConfig()
 	once.Do(func() {
 		// 获取 mysql 连接
-		db := ms.InitDB(&config.DataBase.MysqlData, false)
+		db := ms.InitDB(&config.DataBase.MysqlData, config.CommonBase.Debug)
 		// // 获取 redis 连接
 		// cache := ms.InitCache(&config.DataBase.RedisData)
 		// 获取 user 服务
