@@ -19,4 +19,7 @@
 .vscode/
 logs/
 local/
+build/
 config.yaml
+run.sh
+push_image.sh
