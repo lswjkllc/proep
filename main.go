@@ -45,5 +45,5 @@ func main() {
 	rs.AddUserRouter(e)
 
 	// 开启服务
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(container.BaseConfig.CommonBase.Addr))
 }

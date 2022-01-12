@@ -3,9 +3,12 @@ package commons
 import (
 	"fmt"
 	"io/ioutil"
+	"strconv"
 	"sync"
 
 	"gopkg.in/yaml.v2"
+
+	us "github.com/lswjkllc/proep/src/utils"
 )
 
 //解析yml文件
@@ -18,6 +21,7 @@ type ConfigInfo struct {
 // 公共基础信息
 type CommonBaseEntity struct {
 	Name  string `yaml:"name" json:"name"`
+	Addr  string `yaml:"addr" json:"addr"`
 	Host  string `yaml:"host" json:"host"`
 	Port  int    `yaml:"port" json:"port"`
 	Area  string `yaml:"area" json:"area"`
@@ -81,6 +85,7 @@ func (info *ConfigInfo) ReadFile(path string) {
 func GetConfigByPath(path string) *ConfigInfo {
 	config := &ConfigInfo{}
 	config.ReadFile(path)
+	config.CommonBase.Addr = us.JoinStrings(config.CommonBase.Host, ":", strconv.Itoa(config.CommonBase.Port))
 	return config
 }
 
