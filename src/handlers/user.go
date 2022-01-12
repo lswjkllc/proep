@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/labstack/echo"
 	sc "github.com/lswjkllc/proep/src"
 	ms "github.com/lswjkllc/proep/src/models"
@@ -13,13 +15,56 @@ func CreateUser(c echo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
-	// 获取 Container
-	container := sc.GetContainer()
 	// 创建 User
-	err := container.UserUsecase.CreateUser(user)
+	err := sc.GetContainer().UserUsecase.CreateUser(user)
 	if err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
-	// 返回响应
+
 	return us.ResponseJson(c, us.Success, "", *user)
+}
+
+func GetUser(c echo.Context) error {
+	// 获取 path 参数
+	sid := c.Param("id")
+	// str to int
+	id, err := strconv.Atoi(sid)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	// 获取 User
+	user, err := sc.GetContainer().UserUsecase.GetUserById(id)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+
+	return us.ResponseJson(c, us.Success, "", user)
+}
+
+func UpdateUser(c echo.Context) error {
+	// 获取 path 参数
+	sid := c.Param("id")
+	// str to int
+	id, err := strconv.Atoi(sid)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	// 获取 Container
+	container := sc.GetContainer()
+	// 获取 User
+	user, err := container.UserUsecase.GetUserById(id)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	// 绑定参数
+	if err := c.Bind(&user); err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	// 修改 user
+	err = container.UserUsecase.UpdateUserById(id, &user)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+
+	return us.ResponseJson(c, us.Success, "", user)
 }
