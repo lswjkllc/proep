@@ -68,3 +68,19 @@ func UpdateUser(c echo.Context) error {
 
 	return us.ResponseJson(c, us.Success, "", user)
 }
+
+func DeleteUser(c echo.Context) error {
+	// 获取 path 参数
+	sid := c.Param("id")
+	// str to int
+	id, err := strconv.Atoi(sid)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	// 删除
+	err = sc.GetContainer().UserUsecase.DeleteUserById(id, false)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	return us.ResponseJson(c, us.Success, "", nil)
+}

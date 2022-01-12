@@ -14,10 +14,8 @@ func RequestEnd(next echo.HandlerFunc) echo.HandlerFunc {
 		startTime := time.Now()
 		defer func() {
 			costTime := time.Since(startTime)
-			traceId := c.Request().Header.Get("traceId")
 			logger.Info(
-				"RequestEnd",
-				zap.String("traceId", traceId),           // 请求 链路Id
+				c, "RequestEnd",
 				zap.String("uri", c.Path()),              // 请求 Uri
 				zap.String("method", c.Request().Method), // 请求 方式
 				zap.Duration("costTime", costTime),       // 请求/响应 耗时

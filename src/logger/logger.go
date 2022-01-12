@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/labstack/echo"
 	coms "github.com/lswjkllc/proep/src/commons"
 	us "github.com/lswjkllc/proep/src/utils"
 	"github.com/natefinch/lumberjack"
@@ -117,12 +118,14 @@ func checkLevel(levelstr string) zapcore.Level {
 	return level
 }
 
-func Info(msg string, fields ...zap.Field) {
+func Info(c echo.Context, msg string, fields ...zap.Field) {
 	// 获取 caller 链路信息
 	caller := getCaller(1)
-	// 将 caller 信息保存
-	fields = append(fields, zap.String("caller", caller))
-	// 输出日志
+	// 获取 链路Id
+	traceId := c.Request().Header.Get("traceId")
+	// 保存
+	fields = append(fields, zap.String("caller", caller), zap.String("traceId", traceId))
+	// 输出
 	Logger.Info(msg, fields...)
 }
 

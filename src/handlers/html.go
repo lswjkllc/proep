@@ -33,10 +33,7 @@ func GetHtml(c echo.Context) error {
 	}
 	// 获取结果
 	dt, err := req.Do(&html)
-	logger.Info(
-		us.JoinStrings(string(req.Method), " ", req.Url),
-		zap.String("traceId", req.TraceId),
-		zap.Duration("costTime", dt))
+	logger.Info(c, us.JoinStrings(string(req.Method), " ", req.Url), zap.Duration("costTime", dt))
 	if err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
