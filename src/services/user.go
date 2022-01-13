@@ -58,13 +58,13 @@ func (ucase UserService) where(searchData map[string]interface{}) *gorm.DB {
 func (ucase UserService) FindUsers(searchData map[string]interface{}) UserList {
 	// 声明
 	var users []ms.User
-	var count int64
+	var total int64
 	// 获取分页信息
 	offset, limit := getPageInfo(searchData)
 	// 查找
-	ucase.where(searchData).Order("id desc").Offset(offset).Limit(limit).Find(&users).Count(&count)
+	ucase.where(searchData).Order("id desc").Offset(offset).Limit(limit).Find(&users).Count(&total)
 
-	return UserList{Users: users, Total: count, Offset: offset, Limit: limit}
+	return UserList{Users: users, Total: total, Offset: offset, Limit: limit}
 }
 
 func (ucase UserService) CreateUser(user *ms.User) error {
