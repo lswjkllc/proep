@@ -7,6 +7,7 @@ import (
 )
 
 func AddUserRouter(e *echo.Echo) {
+	e.POST("/users", hs.SearchUsers)
 	e.POST("/user", hs.CreateUser)
 	e.GET("/user/:id", hs.GetUser)
 	e.PUT("/user/:id", hs.UpdateUser)

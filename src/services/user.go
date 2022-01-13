@@ -13,8 +13,44 @@ type UserService struct {
 	Db     *gorm.DB
 }
 
+func (ucase UserService) whereNotDeleted() *gorm.DB {
+	return ucase.Db.Where("is_deleted", 0)
+}
+
 func (ucase UserService) whereById(id int) *gorm.DB {
-	return ucase.Db.Where("id = ? and is_deleted = 0", id)
+	return ucase.whereNotDeleted().Where("id", id)
+}
+
+func (ucase UserService) where(searchData map[string]interface{}) *gorm.DB {
+	tx := ucase.whereNotDeleted()
+
+	name, ok := searchData["name"]
+	if ok {
+		tx = tx.Where("name LIKE ?", name.(string)+"%")
+	}
+	age, ok := searchData["age"]
+	if ok {
+		tx = tx.Where("age", uint(age.(float64)))
+	}
+	gender, ok := searchData["gender"]
+	if ok {
+		tx = tx.Where("gender", gender)
+	}
+	email, ok := searchData["email"]
+	if ok {
+		tx = tx.Where("email", email)
+	}
+
+	return tx
+}
+
+func (ucase UserService) FindUsers(searchData map[string]interface{}) ([]ms.User, int64) {
+	var users []ms.User
+	offset, limit := getPageInfo(searchData)
+
+	result := ucase.where(searchData).Order("id desc").Offset(offset).Limit(limit).Find(&users)
+
+	return users, result.RowsAffected
 }
 
 func (ucase UserService) CreateUser(user *ms.User) error {

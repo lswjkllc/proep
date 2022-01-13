@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 
 	"github.com/labstack/echo"
@@ -9,6 +11,22 @@ import (
 	ms "github.com/lswjkllc/proep/src/models"
 	us "github.com/lswjkllc/proep/src/utils"
 )
+
+func SearchUsers(c echo.Context) error {
+	// 获取参数
+	result, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	var searchData map[string]interface{}
+	err = json.Unmarshal(result, &searchData)
+	if err != nil {
+		return us.ResponseJson(c, us.Fail, err.Error(), nil)
+	}
+	users, _ := sc.GetContainer().UserUsecase.FindUsers(searchData)
+
+	return us.ResponseJson(c, us.Fail, "", users)
+}
 
 func CreateUser(c echo.Context) error {
 	// 绑定参数
