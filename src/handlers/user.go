@@ -23,9 +23,9 @@ func SearchUsers(c echo.Context) error {
 	if err != nil {
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
-	users, _ := sc.GetContainer().UserUsecase.FindUsers(searchData)
+	userList := sc.GetContainer().UserUsecase.FindUsers(searchData)
 
-	return us.ResponseJson(c, us.Fail, "", users)
+	return us.ResponseJson(c, us.Fail, "", userList)
 }
 
 func CreateUser(c echo.Context) error {

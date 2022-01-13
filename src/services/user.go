@@ -13,6 +13,13 @@ type UserService struct {
 	Db     *gorm.DB
 }
 
+type UserList struct {
+	Users  []ms.User `json:"users" yaml:"users"`
+	Total  int64     `json:"total" yaml:"total"`
+	Offset int       `json:"offset" yaml:"Offset"`
+	Limit  int       `json:"limit" yaml:"limit"`
+}
+
 func (ucase UserService) whereNotDeleted() *gorm.DB {
 	return ucase.Db.Where("is_deleted", 0)
 }
@@ -22,20 +29,24 @@ func (ucase UserService) whereById(id int) *gorm.DB {
 }
 
 func (ucase UserService) where(searchData map[string]interface{}) *gorm.DB {
+	// 查询 未删除
 	tx := ucase.whereNotDeleted()
-
+	// 模糊查询 姓名
 	name, ok := searchData["name"]
 	if ok {
 		tx = tx.Where("name LIKE ?", name.(string)+"%")
 	}
+	// 查询 年龄
 	age, ok := searchData["age"]
 	if ok {
 		tx = tx.Where("age", uint(age.(float64)))
 	}
+	// 查询 性别
 	gender, ok := searchData["gender"]
 	if ok {
 		tx = tx.Where("gender", gender)
 	}
+	// 查询 邮箱
 	email, ok := searchData["email"]
 	if ok {
 		tx = tx.Where("email", email)
@@ -44,13 +55,16 @@ func (ucase UserService) where(searchData map[string]interface{}) *gorm.DB {
 	return tx
 }
 
-func (ucase UserService) FindUsers(searchData map[string]interface{}) ([]ms.User, int64) {
+func (ucase UserService) FindUsers(searchData map[string]interface{}) UserList {
+	// 声明
 	var users []ms.User
+	var count int64
+	// 获取分页信息
 	offset, limit := getPageInfo(searchData)
+	// 查找
+	ucase.where(searchData).Order("id desc").Offset(offset).Limit(limit).Find(&users).Count(&count)
 
-	result := ucase.where(searchData).Order("id desc").Offset(offset).Limit(limit).Find(&users)
-
-	return users, result.RowsAffected
+	return UserList{Users: users, Total: count, Offset: offset, Limit: limit}
 }
 
 func (ucase UserService) CreateUser(user *ms.User) error {
