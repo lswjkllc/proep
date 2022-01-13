@@ -122,7 +122,7 @@ func Info(c echo.Context, msg string, fields ...zap.Field) {
 	// 获取 caller 链路信息
 	caller := getCaller(1)
 	// 获取 链路Id
-	traceId := c.Request().Header.Get("traceId")
+	traceId := c.Request().Header.Get("trace-id")
 	// 保存
 	fields = append(fields, zap.String("caller", caller), zap.String("traceId", traceId))
 	// 输出

@@ -34,7 +34,6 @@ type Requests struct {
 	Form    bool                   `json:"form" yaml:"form"`
 	Json    bool                   `json:"json" yaml:"yaml"`
 	Query   bool                   `json:"query" yaml:"query"`
-	TraceId string                 `json:"tracdId" yaml:"traceId"`
 }
 
 func (req Requests) Do(resp interface{}) (time.Duration, error) {

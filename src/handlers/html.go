@@ -25,11 +25,10 @@ func GetHtml(c echo.Context) error {
 	html := Html{}
 	// 组织请求
 	req := us.Requests{
-		Url:     "http://127.0.0.1:8001/profession/info",
-		Method:  us.POST,
-		Body:    map[string]interface{}{"id": 2},
-		Json:    true,
-		TraceId: c.Request().Header.Get("traceId"),
+		Url:    "http://127.0.0.1:8001/profession/info",
+		Method: us.POST,
+		Body:   map[string]interface{}{"id": 2},
+		Json:   true,
 	}
 	// 获取结果
 	dt, err := req.Do(&html)
