@@ -2,7 +2,9 @@ package models
 
 import (
 	"fmt"
+	"time"
 
+	"github.com/go-redis/redis/v8"
 	coms "github.com/lswjkllc/proep/src/commons"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -33,6 +35,14 @@ func InitDB(mysqlConfig *coms.MysqlDataEntity, debug bool) *gorm.DB {
 	return db
 }
 
-func InitCache(config *coms.RedisDataEntity) string {
-	return ""
+func InitCache(config *coms.RedisDataEntity) *redis.Client {
+	client := redis.NewClient(&redis.Options{
+		Addr:         config.Addr,
+		Password:     config.Password,
+		DB:           config.Name,
+		PoolSize:     config.PoolSize,
+		MinIdleConns: config.MinIdle,
+		PoolTimeout:  time.Duration(config.Timeout),
+	})
+	return client
 }

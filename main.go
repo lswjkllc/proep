@@ -44,6 +44,7 @@ func main() {
 	// 添加路由
 	rs.AddHealthRouter(e)
 	rs.AddUserRouter(e)
+	rs.AddSaleRouter(e)
 
 	// 开启服务
 	e.Logger.Fatal(e.Start(container.BaseConfig.CommonBase.Addr))

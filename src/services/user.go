@@ -95,6 +95,6 @@ func (ucase UserService) DeleteUserById(id int, hard bool) error {
 	return ucase.whereById(id).Delete(ms.User{}).Error
 }
 
-func NewService(config *coms.ConfigInfo, db *gorm.DB) *UserService {
+func NewUserService(config *coms.ConfigInfo, db *gorm.DB) *UserService {
 	return &UserService{Config: config, Db: db}
 }

@@ -63,10 +63,12 @@ func (myde MysqlDataEntity) GetDsn() string {
 
 // redis 数据库信息
 type RedisDataEntity struct {
-	Host    string `yaml:"host" json:"host"`
-	Port    int    `yaml:"port" json:"port"`
-	Name    string `yaml:"name" json:"name"`
-	Timeout int    `yaml:"timeout" json:"timeout"`
+	Addr     string `yaml:"addr" json:"addr"`
+	Name     int    `yaml:"name" json:"name"`
+	Password string `yaml:"password" json:"password"`
+	PoolSize int    `yaml:"poolsize" json:"poolsize"`
+	MinIdle  int    `yaml:"minidle" json:"minidle"`
+	Timeout  int    `yaml:"timeout" json:"timeout"`
 }
 
 func (info *ConfigInfo) ReadFile(path string) {

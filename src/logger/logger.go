@@ -118,15 +118,29 @@ func checkLevel(levelstr string) zapcore.Level {
 	return level
 }
 
+func Error(c echo.Context, msg string, fields ...zap.Field) {
+	// 添加额外信息
+	fields = addFields(c, fields...)
+	// 输出
+	Logger.Error(msg, fields...)
+}
+
 func Info(c echo.Context, msg string, fields ...zap.Field) {
+	// 添加额外信息
+	fields = addFields(c, fields...)
+	// 输出
+	Logger.Info(msg, fields...)
+}
+
+func addFields(c echo.Context, fields ...zap.Field) []zap.Field {
 	// 获取 caller 链路信息
-	caller := getCaller(1)
+	caller := getCaller(2)
 	// 获取 链路Id
 	traceId := c.Request().Header.Get("trace-id")
 	// 保存
 	fields = append(fields, zap.String("caller", caller), zap.String("traceId", traceId))
-	// 输出
-	Logger.Info(msg, fields...)
+
+	return fields
 }
 
 func getCaller(skipOff int) string {
