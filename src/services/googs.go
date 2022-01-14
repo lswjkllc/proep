@@ -29,16 +29,16 @@ func (gcase GoodsService) FlashSale(count int, key string) error {
 
 	// increment
 	increment := func(tx *redis.Tx) error {
-		// 先查询下当前watch监听的key的值
+		// 先查询下当前 watch 监听的 key 的值 v
 		v, err := tx.Get(ctx, key).Int()
 		if err != nil && err != redis.Nil {
 			return err
 		}
-		// 当 缓存值 >= 设定值, 表示 秒杀结束
+		// 当 缓存值 v >= count 设定值, 表示 秒杀结束
 		if v >= count {
 			return &SaleError{"秒杀结束"}
 		}
-		// 如果 key 值没有改变的话, TxPipelined 函数才会调用成功
+		// 如果 key的值 v 没有改变的话, TxPipelined 函数才会调用成功
 		_, err = tx.TxPipelined(ctx, func(pipe redis.Pipeliner) error {
 			// v++
 			pipe.Incr(ctx, key)
@@ -46,7 +46,7 @@ func (gcase GoodsService) FlashSale(count int, key string) error {
 		})
 		return err
 	}
-	// watch
+	// watch（预扣）
 	err := gcase.Cache.Watch(ctx, increment, key)
 
 	return err
