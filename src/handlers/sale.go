@@ -42,11 +42,11 @@ func FlashSale(c echo.Context) error {
 	container := sc.GetContainer()
 
 	// 秒杀
-	err := container.GoodsUsecase.FlashSale(flashCount, "sales")
+	err := container.GoodsUsecase.FlashSale("flash", "sales", flashCount)
 	if err != nil {
 		logger.Error(c, err.Error())
 		return us.ResponseJson(c, us.Fail, err.Error(), nil)
 	}
 
-	return us.ResponseJson(c, us.Success, "请求成功", nil)
+	return us.ResponseJson(c, us.Success, "秒杀成功", nil)
 }

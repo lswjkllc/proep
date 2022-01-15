@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	coms "github.com/lswjkllc/proep/src/commons"
+	ms "github.com/lswjkllc/proep/src/models"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +24,7 @@ func (se SaleError) Error() string {
 	return se.Value
 }
 
-func (gcase GoodsService) FlashSale(count int, key string) error {
+func (gcase GoodsService) cacheIncrToMax(key string, maxcount int) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -35,7 +36,7 @@ func (gcase GoodsService) FlashSale(count int, key string) error {
 			return err
 		}
 		// 当 缓存值 v >= count 设定值, 表示 秒杀结束
-		if v >= count {
+		if v >= maxcount {
 			return &SaleError{"秒杀结束"}
 		}
 		// 如果 key的值 v 没有改变的话, TxPipelined 函数才会调用成功
@@ -46,8 +47,30 @@ func (gcase GoodsService) FlashSale(count int, key string) error {
 		})
 		return err
 	}
-	// watch（预扣）
-	err := gcase.Cache.Watch(ctx, increment, key)
+	// watch
+	return gcase.Cache.Watch(ctx, increment, key)
+}
+
+func (gcase GoodsService) whereNotDeleted() *gorm.DB {
+	return gcase.Db.Model(&ms.Goods{}).Where("is_deleted", 0)
+}
+
+func (gcase GoodsService) whereByName(name string) *gorm.DB {
+	return gcase.whereNotDeleted().Where("name", name)
+}
+
+func (gcase GoodsService) dbDescCountByName(name string) error {
+	return gcase.whereByName(name).Update("count", gorm.Expr("count - ?", 1)).Error
+}
+
+func (gcase GoodsService) FlashSale(name string, key string, maxcount int) error {
+	// 预扣
+	err := gcase.cacheIncrToMax(key, maxcount)
+	if err != nil {
+		return err
+	}
+	// 数据库扣除
+	err = gcase.dbDescCountByName(name)
 
 	return err
 }

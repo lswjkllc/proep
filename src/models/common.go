@@ -30,6 +30,7 @@ func InitDB(mysqlConfig *coms.MysqlDataEntity, debug bool) *gorm.DB {
 	if debug {
 		// debug 模式下, 迁移数据结构
 		db.AutoMigrate(&User{})
+		db.AutoMigrate(&Goods{})
 	}
 
 	return db

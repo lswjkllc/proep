@@ -8,6 +8,7 @@ type Goods struct {
 	UpdatedAt int64  `gorm:"autoUpdateTime:milli;not null;comment:更新时间（毫秒级）" json:"updateAt" form:"updateAt" query:"updateAt"`
 	Name      string `gorm:"size:50;not null;uniqueIndex:unq_idx_name,priority:1;index:idx_name;comment:名字" json:"name" form:"name" query:"name"`
 	IsDeleted int64  `gorm:"not null;uniqueIndex:unq_idx_name,priority:2;comment:是否删除" json:"isDeleted" form:"isDeleted" query:"isDeleted"`
+	Label     string `gorm:"type:varchar(255);not null;comment:标签" json:"label" form:"label" query:"label"`
 	Count     int    `gorm:"type:int(11);not null;comment:数量" json:"count" form:"count" query:"count"`
 }
 
