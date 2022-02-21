@@ -14,7 +14,7 @@ import (
 )
 
 func shutdown(c chan os.Signal, container *sc.Container) {
-	for true {
+	for {
 		// 监听所有信号
 		signal.Notify(c, syscall.SIGINT)
 		<-c
